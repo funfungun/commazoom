@@ -1,4 +1,4 @@
-```
+```mermaid
 erDiagram
   User ||--o{ Alarm : has
   User ||--o{ FavoriteStore : has
