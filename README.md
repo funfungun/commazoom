@@ -1,95 +1,292 @@
 ```mermaid
 erDiagram
-  User ||--o{ Article : writes
-  User ||--o{ Product : owns
-  User ||--o{ Comment : writes
-  User ||--o{ Favorite : favorites
-  User ||--o{ Like : likes
-  User ||--o{ Notification : receives
+  User ||--o{ Grade : "has grade"
+  User ||--o{ Alarm : "receives"
+  User ||--o{ Cart : "has cart"
+  User ||--o{ FavoriteStore : "favorites"
+  User ||--o{ Inquiry : "writes"
+  User ||--o{ Reply : "writes reply"
+  User ||--o{ Review : "writes review"
+  User ||--o{ SalesLog : "purchases"
+  User ||--o{ Store : "owns store"
 
-  Article ||--o{ Comment : has
-  Article ||--o{ Like : receives
+  Grade ||--o{ User : "grades users"
 
-  Product ||--o{ Comment : has
-  Product ||--o{ Favorite : receives
+  Store ||--o{ FavoriteStore : "is favorited"
+  Store ||--o{ Product : "sells"
+  Store ||--o{ SalesLog : "has logs"
+  Store ||--o{ DailyStoreSales : "daily sales"
+  Store ||--o{ WeeklyStoreSales : "weekly sales"
+  Store ||--o{ MonthlyStoreSales : "monthly sales"
+  Store ||--o{ yearlyStoreSales : "yearly sales"
 
-  Comment }o--|| Product : on_product
-  Comment }o--|| Article : on_article
-  Comment }o--|| User : authored_by
+  FavoriteStore }o--|| User : "by user"
+  FavoriteStore }o--|| Store : "of store"
 
-  Favorite }o--|| Product : favorite_product
-  Favorite }o--|| User : favorited_by
+  Product ||--o{ Review : "gets reviews"
+  Product ||--o{ Inquiry : "gets inquiries"
+  Product ||--o{ CartItem : "in carts"
+  Product ||--o{ OrderItem : "in orders"
+  Product ||--o{ Stock : "has stock"
+  Product }o--|| Store : "belongs to"
+  Product }o--|| Category : "in category"
+  Product ||--o{ SalesLog : "is sold"
 
-  Like }o--|| Article : liked_article
-  Like }o--|| User : liked_by
+  Category ||--o{ Product : "categorizes"
 
-  Notification }o--|| User : notified_user
+  Stock }o--|| Product : "of product"
+  Stock }o--|| Size : "of size"
+
+  Size ||--o{ CartItem : "chosen size"
+  Size ||--o{ OrderItem : "ordered size"
+  Size ||--o{ Stock : "used in"
+
+  Inquiry }o--|| User : "asked by"
+  Inquiry }o--|| Product : "about product"
+  Inquiry ||--o{ Reply : "has reply"
+
+  Reply }o--|| Inquiry : "to inquiry"
+  Reply }o--|| User : "by user (optional)"
+
+  Review }o--|| User : "written by"
+  Review }o--|| Product : "about product"
+  Review }o--|| OrderItem : "on order"
+
+  Cart }o--|| User : "belongs to"
+  Cart ||--o{ CartItem : "contains items"
+
+  CartItem }o--|| Cart : "in cart"
+  CartItem }o--|| Product : "of product"
+  CartItem }o--|| Size : "of size"
+
+  Order }o--|| User : "placed by"
+  Order ||--o{ OrderItem : "has items"
+  Order ||--o{ Payment : "has payment"
+
+  OrderItem }o--|| Order : "in order"
+  OrderItem }o--|| Product : "of product"
+  OrderItem }o--|| Size : "of size"
+  OrderItem ||--o{ Review : "is reviewed"
+
+  Payment }o--|| Order : "for order"
+
+  Alarm }o--|| User : "notifies"
+
+  SalesLog }o--|| Product : "of product"
+  SalesLog }o--|| User : "by user"
+  SalesLog }o--|| Store : "from store"
+
+  DailyStoreSales }o--|| Store : "for store"
+  WeeklyStoreSales }o--|| Store : "for store"
+  MonthlyStoreSales }o--|| Store : "for store"
+  yearlyStoreSales }o--|| Store : "for store"
 
   User {
-    Int id
+    String id
+    String name
     String email
-    String nickname
-    String image
     String password
+    String refreshToken
+    String type
+    Int points
     DateTime createdAt
     DateTime updatedAt
+    String gradeId
+    String image
   }
 
-  Article {
-    Int id
-    String title
-    String content
-    String image
-    Int userId
+  Grade {
+    String id
+    String name
+    Int rate
+    Int minAmount
+  }
+
+  Store {
+    String id
+    String name
     DateTime createdAt
     DateTime updatedAt
+    String userId
+    String address
+    String phoneNumber
+    String content
+    String image
+  }
+
+  FavoriteStore {
+    String storeId
+    String userId
   }
 
   Product {
+    String id
+    String name
+    String image
+    DateTime createdAt
+    DateTime updatedAt
+    Int reviewsRating
+    String storeId
+    Int price
+    Int discountRate
+    DateTime discountStartTime
+    DateTime discountEndTime
+    String categoryId
+  }
+
+  Category {
+    String id
+    String name
+  }
+
+  Stock {
+    String id
+    String productId
+    Int sizeId
+    Int quantity
+  }
+
+  Size {
     Int id
     String name
-    String description
-    Int price
-    String[] tags
-    String[] images
-    Int userId
-    DateTime createdAt
-    DateTime updatedAt
+    Json size
   }
 
-  Comment {
-    Int id
+  Inquiry {
+    String id
+    String userId
+    String productId
+    String title
     String content
-    Int productId
-    Int articleId
-    Int userId
+    String status
+    Boolean isSecret
     DateTime createdAt
     DateTime updatedAt
   }
 
-  Favorite {
-    Int id
-    Int productId
-    Int userId
+  Reply {
+    String id
+    String inquiryId
+    String userId
+    String content
     DateTime createdAt
     DateTime updatedAt
   }
 
-  Like {
-    Int id
-    Int articleId
-    Int userId
+  Review {
+    String id
+    String userId
+    String productId
+    Int rating
+    String content
+    DateTime createdAt
+    DateTime updatedAt
+    String orderItemId
+  }
+
+  Cart {
+    String id
+    String buyerId
     DateTime createdAt
     DateTime updatedAt
   }
 
-  Notification {
-    Int id
-    Int userId
-    String type
-    Json payload
-    Boolean read
+  CartItem {
+    String id
+    String cartId
+    String productId
+    Int sizeId
+    Int quantity
     DateTime createdAt
     DateTime updatedAt
+  }
+
+  Order {
+    String id
+    String userId
+    String name
+    String phoneNumber
+    String address
+    Int subtotal
+    Int totalQuantity
+    Int usePoint
+    DateTime createdAt
+    DateTime updatedAt
+  }
+
+  OrderItem {
+    String id
+    Int price
+    Int quantity
+    String productId
+    Int sizeId
+    String orderId
+    Boolean isReviewed
+  }
+
+  Payment {
+    String id
+    Int price
+    String status
+    DateTime createdAt
+    DateTime updatedAt
+    String orderId
+  }
+
+  Alarm {
+    String id
+    String userId
+    String content
+    Boolean isChecked
+    DateTime createdAt
+    DateTime updatedAt
+  }
+
+  SalesLog {
+    String id
+    String productId
+    String userId
+    String storeId
+    Int price
+    Int quantity
+    DateTime soldAt
+  }
+
+  DailyStoreSales {
+    String id
+    String storeId
+    DateTime date
+    Int totalSales
+    Int totalOrders
+    DateTime createdAt
+  }
+
+  WeeklyStoreSales {
+    String id
+    String storeId
+    Int week
+    Int year
+    Int totalSales
+    Int totalOrders
+    DateTime createdAt
+  }
+
+  MonthlyStoreSales {
+    String id
+    String storeId
+    Int month
+    Int year
+    Int totalSales
+    Int totalOrders
+    DateTime createdAt
+  }
+
+  yearlyStoreSales {
+    String id
+    String storeId
+    Int year
+    Int totalSales
+    Int totalOrders
+    DateTime createdAt
   }
 ```
