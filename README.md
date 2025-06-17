@@ -60,8 +60,8 @@ erDiagram
   Comment {
     Int id
     String content
-    Int? productId
-    Int? articleId
+    Int productId  %% nullable
+    Int articleId  %% nullable
     Int userId
     DateTime createdAt
     DateTime updatedAt
@@ -86,7 +86,7 @@ erDiagram
   Notification {
     Int id
     Int userId
-    NotificationType type
+    String type  %% enum: NotificationType
     Json payload
     Boolean read
     DateTime createdAt
