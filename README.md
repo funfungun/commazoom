@@ -3,7 +3,7 @@ erDiagram
   User ||--o{ Article : writes
   User ||--o{ Product : owns
   User ||--o{ Comment : writes
-  User ||--o{ Favorite : has
+  User ||--o{ Favorite : favorites
   User ||--o{ Like : likes
   User ||--o{ Notification : receives
 
@@ -13,17 +13,17 @@ erDiagram
   Product ||--o{ Comment : has
   Product ||--o{ Favorite : receives
 
-  Comment }o--|| User : authored_by
   Comment }o--|| Product : on_product
   Comment }o--|| Article : on_article
+  Comment }o--|| User : authored_by
 
-  Favorite }o--|| Product : favorites
-  Favorite }o--|| User : by
+  Favorite }o--|| Product : favorite_product
+  Favorite }o--|| User : favorited_by
 
-  Like }o--|| Article : on
-  Like }o--|| User : by
+  Like }o--|| Article : liked_article
+  Like }o--|| User : liked_by
 
-  Notification }o--|| User : for
+  Notification }o--|| User : notified_user
 
   User {
     Int id
@@ -60,8 +60,8 @@ erDiagram
   Comment {
     Int id
     String content
-    Int productId  %% nullable
-    Int articleId  %% nullable
+    Int productId
+    Int articleId
     Int userId
     DateTime createdAt
     DateTime updatedAt
@@ -86,7 +86,7 @@ erDiagram
   Notification {
     Int id
     Int userId
-    String type  %% enum: NotificationType
+    String type
     Json payload
     Boolean read
     DateTime createdAt
